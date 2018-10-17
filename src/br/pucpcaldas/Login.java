@@ -9,11 +9,10 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXButton.ButtonType;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -30,11 +29,9 @@ import javafx.scene.text.Text;
  */
 public class Login {
     
-    private static Login login;
     private final Scene scene;
     private final GridPane grid;
     private final BorderPane borderPane;
-    private final Dimension screen;
     private final JFXButton btnLogin;
     private final JFXButton btnExit;
     private final JFXButton btnCadastrar;
@@ -42,14 +39,10 @@ public class Login {
     private final JFXPasswordField senha;
     private final Text lbl_usuario;
     private final Text lbl_senha;
-    private final Text sceneTitle;
-    private final int width;
-    private final int height;
-    
+    private final Text sceneTitle;    
     
     public Login() {
-        
-        this.screen = Toolkit.getDefaultToolkit().getScreenSize();
+       
         this.borderPane = new BorderPane();
         this.grid = new GridPane();
         this.btnLogin = new JFXButton("ENTRAR");
@@ -60,10 +53,7 @@ public class Login {
         this.lbl_senha = new Text("Senha: ");
         this.lbl_usuario = new Text("Usuário: ");
         this.sceneTitle = new Text("EnglishTutor - Login");
-        
-        width = (int)(screen.width * 0.40);
-        height = (int)(screen.height * 0.60);
-        
+                
         this.sceneTitle.setFont(Font.font("Arial", FontWeight.BOLD, 30));
         this.sceneTitle.setFill(Paint.valueOf("#ffffff"));
         this.lbl_usuario.setFont(Font.font("Arial", 16));
@@ -84,6 +74,12 @@ public class Login {
         this.btnLogin.setRipplerFill(Paint.valueOf("#ffffff"));
         this.btnLogin.setTextFill(Paint.valueOf("#ffffff"));
         this.btnLogin.setStyle("-fx-border-radius: 5; -fx-background-color: #095860;");
+        this.btnLogin.setOnAction((event) -> {
+            EnglishTutorExecute.getPlano().setScene(new Main().getScene());
+            EnglishTutorExecute.getPlano().setFullScreen(true);
+            EnglishTutorExecute.getPlano().setFullScreenExitHint("");
+            EnglishTutorExecute.getPlano().setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        });
         
         this.btnExit.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         this.btnExit.setPrefSize(150, 40);
@@ -120,15 +116,9 @@ public class Login {
         this.borderPane.setCenter(this.grid);
         this.borderPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("#0e4368"), CornerRadii.EMPTY, Insets.EMPTY)));
         
-        this.scene = new Scene(borderPane, width, height);
+        this.scene = new Scene(borderPane);
     }
-    
-    public static Login getInstance() {
-        if(login == null)
-            login = new Login();
-        return login;
-    }
-    
+        
     public Scene getScene() {
         return this.scene;
     }

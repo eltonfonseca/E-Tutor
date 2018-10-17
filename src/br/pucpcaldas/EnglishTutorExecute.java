@@ -6,6 +6,7 @@
 package br.pucpcaldas;
 
 import javafx.application.Application;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -22,7 +23,10 @@ public class EnglishTutorExecute extends Application {
     }
     
     private void init(Stage stage) {
-        stage.setScene(Login.getInstance().getScene());
+        stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        stage.setScene(new Login().getScene());
     }
 
     @Override
