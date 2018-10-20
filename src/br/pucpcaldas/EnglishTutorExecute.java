@@ -6,7 +6,6 @@
 package br.pucpcaldas;
 
 import javafx.application.Application;
-import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -22,10 +21,13 @@ public class EnglishTutorExecute extends Application {
         return plano;
     }
     
+    public static void setPlano(Stage planoNovo) {
+        plano = planoNovo;
+        plano.centerOnScreen();
+        plano.show();
+    }
+    
     private void init(Stage stage) {
-        stage.setFullScreen(true);
-        stage.setFullScreenExitHint("");
-        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         stage.setScene(new Login().getScene());
     }
 
@@ -33,6 +35,7 @@ public class EnglishTutorExecute extends Application {
     public void start(Stage stage) throws Exception {
         this.plano = new Stage(StageStyle.UNDECORATED);
         init(this.plano);
+        this.plano.centerOnScreen();
         this.plano.show();
     }
 

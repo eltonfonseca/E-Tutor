@@ -18,7 +18,9 @@ import javafx.scene.media.MediaView;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javax.swing.JOptionPane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
 
 /**
  *
@@ -27,12 +29,14 @@ import javax.swing.JOptionPane;
 public class Main {
 
     private final Scene scene;
+    private static Stage stageLogin;
     private final BorderPane borderPane;
     private String video;
     private final JFXButton btnExit;
     private final MediaPlayer player;
     private final Media media;
     private final MediaView playerView;
+    private Thread tempoMonitor;
 
     public Main() {
 
@@ -42,8 +46,8 @@ public class Main {
         this.video = "file:///" + path + "/media/video.mp4";
         this.media = new Media(this.video);
         this.borderPane = new BorderPane();
-        this.scene = new Scene(this.borderPane);
-        this.btnExit = new JFXButton();
+        this.scene = new Scene(this.borderPane, 1536, 864);
+        this.btnExit = new JFXButton("SAIR");
         this.player = new MediaPlayer(this.media);
         this.playerView = new MediaView(this.player);
 
@@ -52,18 +56,19 @@ public class Main {
         this.btnExit.setButtonType(JFXButton.ButtonType.RAISED);
         this.btnExit.setRipplerFill(Paint.valueOf("#ffffff"));
         this.btnExit.setTextFill(Paint.valueOf("#ffffff"));
-        this.btnExit.setStyle("-fx-border-radius: 5; -fx-background-color: #991e1e;");
+        this.btnExit.setStyle("-fx-backgound-radius: 5; -fx-background-color: #991e1e;");
         this.btnExit.setOnAction((event) -> {
             this.player.stop();
-            EnglishTutorExecute.getPlano().setScene(new Login().getScene());
-            EnglishTutorExecute.getPlano().setFullScreen(true);
-            EnglishTutorExecute.getPlano().setFullScreenExitHint("");
-            EnglishTutorExecute.getPlano().setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+            this.tempoMonitor.stop();
+            EnglishTutorExecute.getPlano().close();
+            Stage plano = new Stage(StageStyle.UNDECORATED);
+            plano.setScene(new Login().getScene());
+            EnglishTutorExecute.setPlano(plano);
         });
 
         this.player.setAutoPlay(true);
-        this.playerView.setFitWidth(800);
-        this.playerView.setFitHeight(600);
+        this.playerView.setFitWidth(400);
+        this.playerView.setFitHeight(200);
         this.playerView.setStyle("-fx-border-radius: 20px 20px 20px 20px;");
 
         this.borderPane.setCenter(this.playerView);
@@ -81,7 +86,7 @@ public class Main {
                 play();
             }
         });
-        Thread tempo = new Thread() {
+        this.tempoMonitor = new Thread() {
             public void run() {
                 while(true) {
                     try {
@@ -100,7 +105,7 @@ public class Main {
                 }
             }
         };
-        tempo.start();
+        this.tempoMonitor.start();
         
         this.playerView.setMediaPlayer(this.player);
         this.player.play();
