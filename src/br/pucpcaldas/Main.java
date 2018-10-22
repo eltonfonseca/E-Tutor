@@ -6,11 +6,14 @@
 package br.pucpcaldas;
 
 import com.jfoenix.controls.JFXButton;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -29,9 +32,12 @@ import javafx.stage.StageStyle;
 public class Main {
 
     private final Scene scene;
-    private static Stage stageLogin;
     private final BorderPane borderPane;
-    private String video;
+    private final Dimension screen;
+    private final int width;
+    private final int height;
+    private final VBox menu;
+    private final String video;
     private final JFXButton btnExit;
     private final MediaPlayer player;
     private final Media media;
@@ -42,15 +48,24 @@ public class Main {
 
         String path = System.getProperty("user.dir");
         path = path.replace("\\", "/");
+        
+        this.screen = Toolkit.getDefaultToolkit().getScreenSize();
+        this.width = (int) (this.screen.getWidth() * 0.80);
+        this.height = (int) (this.screen.getHeight() * 0.80);
+        
 
         this.video = "file:///" + path + "/media/video.mp4";
         this.media = new Media(this.video);
         this.borderPane = new BorderPane();
-        this.scene = new Scene(this.borderPane, 1536, 864);
+        this.menu = new VBox();
+        this.scene = new Scene(this.borderPane, width, height);
         this.btnExit = new JFXButton("SAIR");
         this.player = new MediaPlayer(this.media);
         this.playerView = new MediaView(this.player);
 
+        this.menu.setStyle("-fx-background-color: black;");
+        this.menu.setPrefSize(200, height);
+        
         this.btnExit.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         this.btnExit.setPrefSize(150, 40);
         this.btnExit.setButtonType(JFXButton.ButtonType.RAISED);
@@ -70,7 +85,10 @@ public class Main {
         this.playerView.setFitWidth(400);
         this.playerView.setFitHeight(200);
         this.playerView.setStyle("-fx-border-radius: 20px 20px 20px 20px;");
-
+        
+        this.borderPane.setAlignment(btnExit, Pos.CENTER);
+        this.borderPane.setAlignment(menu, Pos.CENTER);
+        this.borderPane.setLeft(menu);
         this.borderPane.setCenter(this.playerView);
         this.borderPane.setBottom(btnExit);
         play();
@@ -79,14 +97,12 @@ public class Main {
     private void play() {
 
         this.player.setCycleCount(1);
-        this.player.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                player.stop();
-                play();
-            }
+        this.player.setOnEndOfMedia(() -> {
+            player.stop();
+            play();
         });
         this.tempoMonitor = new Thread() {
+            @Override
             public void run() {
                 while(true) {
                     try {
