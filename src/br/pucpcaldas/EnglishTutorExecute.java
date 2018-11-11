@@ -6,6 +6,7 @@
 package br.pucpcaldas;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -21,10 +22,13 @@ public class EnglishTutorExecute extends Application {
         return plano;
     }
     
-    public static void setPlano(Stage planoNovo) {
-        plano = planoNovo;
+    public static void novoPlano(Scene planoNovo) {
+        Stage planoVelho = plano;
+        plano = new Stage(StageStyle.UNDECORATED);
+        plano.setScene(planoNovo);
         plano.centerOnScreen();
         plano.show();
+        planoVelho.close();
     }
     
     private void init(Stage stage) {
@@ -33,10 +37,10 @@ public class EnglishTutorExecute extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        this.plano = new Stage(StageStyle.UNDECORATED);
-        init(this.plano);
-        this.plano.centerOnScreen();
-        this.plano.show();
+        EnglishTutorExecute.plano = new Stage(StageStyle.UNDECORATED);
+        init(EnglishTutorExecute.plano);
+        EnglishTutorExecute.plano.centerOnScreen();
+        EnglishTutorExecute.plano.show();
     }
 
     /**

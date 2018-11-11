@@ -9,14 +9,11 @@ import com.jfoenix.controls.JFXButton;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -60,9 +57,9 @@ public class Main {
     private Media media;
     private MediaView playerView;
     private Thread tempoMonitor;
+    private Sessao sessao;
 
     public Main() {
-
         ajustResolution();
         this.videos = buildListMedias("videos");
         this.audios = buildListMedias("audios");
@@ -70,6 +67,11 @@ public class Main {
         handleButtonsClick();
         buildPlayer();
         buildLayout();
+        this.sessao = Sessao.getSessao();
+        if(sessao.getNota() >= 9) {
+            this.btnInglesBasico.setDisable(true);
+            this.btnInglesExercicioBasico.setDisable(true);
+        }
         /*
         //this.media = new Media(this.video);
         this.player = new MediaPlayer(this.media);
@@ -246,10 +248,7 @@ public class Main {
          this.btnExit.setOnMouseClicked((event) -> {
             //this.player.stop();
             //this.tempoMonitor.stop();
-            EnglishTutorExecute.getPlano().close();
-            Stage plano = new Stage(StageStyle.UNDECORATED);
-            plano.setScene(new Login().getScene());
-            EnglishTutorExecute.setPlano(plano);
+            EnglishTutorExecute.novoPlano(new Login().getScene());
         });
          
         this.btnExit.setOnMouseEntered((event) -> {
@@ -268,6 +267,30 @@ public class Main {
         
         this.btnInglesBasico.setOnMouseExited((event) -> {
             this.btnInglesBasico.setBackground(new Background(new BackgroundFill(Paint.valueOf("#022614"), CornerRadii.EMPTY, Insets.EMPTY)));
+        });
+        
+        this.btnInglesAvancado.setOnMouseEntered((event) -> {
+            this.btnInglesAvancado.setBackground(new Background(new BackgroundFill(Paint.valueOf("#337253"), CornerRadii.EMPTY, Insets.EMPTY)));
+        });
+        
+        this.btnInglesAvancado.setOnMouseExited((event) -> {
+            this.btnInglesAvancado.setBackground(new Background(new BackgroundFill(Paint.valueOf("#022614"), CornerRadii.EMPTY, Insets.EMPTY)));
+        });
+        
+        this.btnInglesExercicioBasico.setOnMouseEntered((event) -> {
+            this.btnInglesExercicioBasico.setBackground(new Background(new BackgroundFill(Paint.valueOf("#337253"), CornerRadii.EMPTY, Insets.EMPTY)));
+        });
+        
+        this.btnInglesExercicioBasico.setOnMouseExited((event) -> {
+            this.btnInglesExercicioBasico.setBackground(new Background(new BackgroundFill(Paint.valueOf("#022614"), CornerRadii.EMPTY, Insets.EMPTY)));
+        });
+        
+        this.btnInglesExercicioAvancado.setOnMouseEntered((event) -> {
+            this.btnInglesExercicioAvancado.setBackground(new Background(new BackgroundFill(Paint.valueOf("#337253"), CornerRadii.EMPTY, Insets.EMPTY)));
+        });
+        
+        this.btnInglesExercicioAvancado.setOnMouseExited((event) -> {
+            this.btnInglesExercicioAvancado.setBackground(new Background(new BackgroundFill(Paint.valueOf("#022614"), CornerRadii.EMPTY, Insets.EMPTY)));
         });
     }
 }

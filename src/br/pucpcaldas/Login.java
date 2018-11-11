@@ -10,7 +10,10 @@ import com.jfoenix.controls.JFXButton.ButtonType;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -78,21 +81,42 @@ public class Login {
         this.senha.setPrefSize(300, 30);
 
         this.btnLogin.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        this.btnLogin.setPrefSize(150, 40);
+        this.btnLogin.setPrefSize(this.width * 0.4, this.height * 0.08);
         this.btnLogin.setButtonType(ButtonType.RAISED);
         this.btnLogin.setRipplerFill(Paint.valueOf("#ffffff"));
         this.btnLogin.setTextFill(Paint.valueOf("#ffffff"));
         this.btnLogin.setStyle("-fx-background-radius: 5; -fx-background-color: #095860;");
         this.btnLogin.setOnAction((event) -> {
 
-            EnglishTutorExecute.getPlano().close();
-            Stage plano = new Stage(StageStyle.UNDECORATED);
-            plano.setScene(new Main().getScene());
-            EnglishTutorExecute.setPlano(plano);
+            Conexao conexao = Conexao.getConexao();
+            conexao.abrirConexao();
+
+            try {
+                conexao.setStatement(conexao.getCon().createStatement());
+                PreparedStatement st = conexao.getCon().prepareStatement("SELECT * FROM tbl_usuarios WHERE login = ? AND senha = ?");
+
+                st.setString(1, this.usuario.getText());
+                st.setString(2, this.senha.getText());
+
+                conexao.setResultSet(st.executeQuery());
+                if (conexao.getResultSet().next()) {
+                    Sessao sessao = Sessao.getSessao();
+                    sessao.setLogin(conexao.getResultSet().getString("login"));
+                    sessao.setNota(Double.parseDouble(conexao.getResultSet().getString("nota")));
+                    System.out.println("Nota: " + sessao.getNota());
+                    EnglishTutorExecute.novoPlano(new FirstTest().getSceneAudio());
+                }
+                else {
+                    System.out.println("Usuario e senha incorretos!");
+                }
+            } catch(SQLException | HeadlessException e) {
+                System.out.println("Erro na consulta!: " + e);
+            }
+
         });
 
         this.btnExit.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        this.btnExit.setPrefSize(150, 40);
+        this.btnExit.setPrefSize(this.width * 0.4, this.height * 0.08);
         this.btnExit.setButtonType(ButtonType.RAISED);
         this.btnExit.setRipplerFill(Paint.valueOf("#ffffff"));
         this.btnExit.setTextFill(Paint.valueOf("#ffffff"));
@@ -102,7 +126,7 @@ public class Login {
         });
 
         this.btnCadastrar.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        this.btnCadastrar.setPrefSize(150, 40);
+        this.btnCadastrar.setPrefSize(this.width * 0.4, this.height * 0.08);
         this.btnCadastrar.setButtonType(ButtonType.RAISED);
         this.btnCadastrar.setRipplerFill(Paint.valueOf("#ffffff"));
         this.btnCadastrar.setTextFill(Paint.valueOf("#ffffff"));
@@ -120,9 +144,6 @@ public class Login {
         this.grid.add(this.btnLogin, 1, 2, 1, 1);
         this.grid.add(this.btnCadastrar, 1, 3, 1, 1);
         this.grid.setStyle("-fx-background-radius: 15px 15px 15px 15px; -fx-background-color: #ffffff;");
-        this.grid.setMargin(btnCadastrar, new Insets(0, 0, 0, 70));
-        this.grid.setMargin(btnLogin, new Insets(0, 0, 0, 70));
-        this.grid.setMargin(btnExit, new Insets(0, 0, 0, 70));
 
         this.borderPane.setAlignment(this.sceneTitle, Pos.TOP_CENTER);
         this.borderPane.setTop(this.sceneTitle);
@@ -130,7 +151,7 @@ public class Login {
         this.borderPane.setCenter(this.grid);
         this.borderPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("#0e4368"), CornerRadii.EMPTY, Insets.EMPTY)));
         this.borderPane.setMargin(grid, new Insets(30, 100, 0, 100));
-        
+
         this.scene = new Scene(borderPane, width, height);
     }
 
