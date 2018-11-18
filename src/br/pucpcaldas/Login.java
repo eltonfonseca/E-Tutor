@@ -26,9 +26,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-
 /**
  *
  * @author al550545604
@@ -104,7 +101,8 @@ public class Login {
                     sessao.setLogin(conexao.getResultSet().getString("login"));
                     sessao.setNota(Double.parseDouble(conexao.getResultSet().getString("nota")));
                     System.out.println("Nota: " + sessao.getNota());
-                    EnglishTutorExecute.novoPlano(new FirstTest().getSceneAudio());
+                    //EnglishTutorExecute.novoPlano(new FirstTest().getSceneAudio());
+                    EnglishTutorExecute.novoPlano(new Main().getScene());
                 }
                 else {
                     System.out.println("Usuario e senha incorretos!");
